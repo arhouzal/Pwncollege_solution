@@ -1,0 +1,15 @@
+Dans ce challenge en etulise la notion de bash scripting pour tester la 
+connectiviter de chaque device dans le resaux  alor on loop un ping avec le 
+bash :
+script :
+for i in {1..254}; do
+    ping -c 1 -W 1 10.0.0.$i > /dev/null 2>&1 && echo "10.0.0.$i" &
+done
+wait    ◄─ ATTENDEZ que tous les pings finissent!
+----------------------------------------------------------------------------
+
+& = "Faire ça en background (arrière-plan)"
+   "Ne pas attendre que ce soit fini"
+   "Passer à la ligne suivante immédiatement
+NB : il faut etulise le await 
+pwn.college{oCGylbpiMki_rv0qp8ZBKcxZpDQ.QXxYzMzwiNxcTN0EzW}

@@ -1,0 +1,6 @@
+nc -N 10.0.0.2 31337
+l argument -N est etuliser avoir la capacite de fermer notre connection ansi
+que envoyer une requect tcp de fin de la communication ( avec le flag FIN) 
+en appuiant sur ctr + D (EOF)
+
+pwn.college{E4K6pkmIWwVZ92PcsgSBDgBAene.0lNyAjNxwiNxcTN0EzW}

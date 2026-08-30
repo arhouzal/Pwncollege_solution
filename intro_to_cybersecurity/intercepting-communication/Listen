@@ -1,0 +1,5 @@
+nc -l -p 31337 
+-l : activer le mode listen
+-p : arguemre pour specifier le port d ecoute
+
+pwn.college{sGubnDdDDZZUFxpxSXCkALzWNwD.QXwYzMzwiNxcTN0EzW}
