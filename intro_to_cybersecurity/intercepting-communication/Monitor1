@@ -1,0 +1,14 @@
+tshark -i eth0 -f "port 31337" -x
+-f "port 31337" : Capture uniquement le trafic sur le port 31337.
+
+-x : Affiche les données brutes (Hexadécimal + ASCII) de chaque paquet.
+
+le tshark : Le moteur Wrieshark en ligne de commande 
+
+------ autre aleternatif ---------
+
+tcpdump -i eth0 -A prot 313337 
+ -i eth0 : Ecoute sur l interface resaux active
+-A port -A : Affiche directement le contenu des paquets en texte clair
+(ASCII)  sur le terminal 
+
