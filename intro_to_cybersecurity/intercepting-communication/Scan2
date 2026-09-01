@@ -1,2 +1,12 @@
-hy
+nmap -p 31337 -n -Pn --min-rate 1000 10.0.0.0/16
+-p 31337 : Restreint l'analyse au seul port demandé au lieu des 1 000 ports par défaut.
+
+-n : Désactive la résolution DNS inverse pour éviter les délais d'attente.
+
+-Pn : Désactive la phase de découverte par ping (traite directement toutes les IP).
+
+--min-rate 1000 : Force l'envoi d'au moins 1 000 paquets par seconde pour terminer le scan en environ 15 secondes.
+
+connexion :
+nc 10.0.X.Y 31337
 
