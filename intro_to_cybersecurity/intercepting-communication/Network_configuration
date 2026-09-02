@@ -1,0 +1,29 @@
+Pour bien comprendre ce qui se passe, reprenons l'état de votre réseau local :
+
+Votre machine (10.0.0.1) : C'est le point central. Votre carte réseau eth0 porte cette adresse IP avec un masque /24 (255.255.255.0).
+
+L'hôte 10.0.0.2 : Il est allumé et actif sur le réseau virtuel. C'est pour cela que le ping fonctionne immédiatement.
+
+L'hôte 10.0.0.3 : Il est actuellement injoignable (erreur Destination Host Unreachable).
+
+Pourquoi ce message ? Lorsque vous tapez ping 10.0.0.3, votre noyau Linux cherche à savoir quelle machine possède cette adresse sur le réseau local. 
+Il envoie une requête ARP ("Qui a l'adresse 10.0.0.3 ?"). 
+Vu qu'aucune machine ne répond à cet appel, votre système abandonne et conclut que la destination est injoignable.
+
+-------------senario------------------
+
+Le scénario indique que 10.0.0.2 essaie de communiquer avec 10.0.0.3 sur le port 31337. Pour réussir ce défi, 
+vous devez faire en sorte que votre machine incarne ou intercepte cette adresse 10.0.0.3 afin de recevoir et valider le trafic.
+Puisque la machine 10.0.0.3 n'existe pas physiquement comme un autre conteneur indépendant,
+ c'est votre propre interface qui doit s'approprier cette adresse IP pour écouter les paquets qui lui sont envoyés.
+
+#1 : Ajouter l'adresse IP 10.0.0.3 à votre interface eth0 (ce qu'on appelle un alias IP en couche 3) :
+ip addr add 10.0.0.3/24 dev eth0
+Grâce à cela, votre interface va désormais répondre aux requêtes ARP pour 10.0.0.3 
+et accepter tous les paquets que 10.0.0.2 lui enverra.
+
+#2 : Vérifier que l'adresse est bien prise en compte :
+ip addr show eth0
+
+#3 : Écouter le trafic sur le port 31337 pour intercepter la communication de 10.0.0.2 :
+nc -l -p 31337
