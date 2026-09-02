@@ -1,0 +1,22 @@
+# Bloquer tout le trafic entrant sur le port 31337
+sudo iptables -A INPUT -p tcp --dport 31337 -j DROP
+
+sudo iptables -A INPUT -p tcp --dport 31337 -j DROP
+│    │        │ │     │ │   │        │         │
+│    │        │ │     │ │   │        │         └─ ACTION: Bloquer (DROP)
+│    │        │ │     │ │   │        └─────────── Port destination: 31337
+│    │        │ │     │ │   └────────────────── Protocole: TCP
+│    │        │ │     │ └──────────────────── Option: port destination
+│    │        │ │     └────────────────────── Type d'option: -p (protocole)
+│    │        │ └───────────────────────────── Chaîne: INPUT (trafic entrant)
+│    │        └─────────────────────────────── Ajouter une règle (-A)
+│    └──────────────────────────────────────── Programme firewall
+└─────────────────────────────────────────── Exécuter avec droits admin
+
+# Afficher les règles de la chaîne INPUT
+sudo iptables -L INPUT -n
+
+# Output attendu :
+# Chain INPUT (policy ACCEPT)
+# target     prot opt source       destination
+# DROP       tcp  --  0.0.0.0/0    0.0.0.0/0    tcp dpt:31337

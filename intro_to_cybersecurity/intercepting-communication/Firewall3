@@ -1,0 +1,35 @@
+#1
+sudo iptables -A OUTPUT -s 10.0.0.1 -d 10.0.0.2 -p tcp --dport 31337 -j ACCEPT
+
+
+#2 Vérifier la configuration OUTPUT
+sudo iptables -L OUTPUT -n
+
+# S'il y a une règle DROP 0.0.0.0/0 en première ligne, la supprimer
+sudo iptables -D OUTPUT 1
+sudo iptables -D OUTPUT 1
+│    │        │  │      │
+│    │        │  │      └─ Numéro de la règle à supprimer (première)
+│    │        │  └──────── Chaîne: OUTPUT
+│    │        └─────────── **D**elete (supprimer)
+│    └──────────────────── iptables
+└─────────────────────── sudo
+
+sudo iptables -A INPUT -s 10.0.0.2 -d 10.0.0.1 -p tcp --sport 31337 -j ACCEPT
+sudo iptables -A INPUT -s 10.0.0.2 -d 10.0.0.1 -p tcp --sport 31337 -j ACCEPT
+│    │        │ │     │             │         │       │    │         │
+│    │        │ │     │             │         │       │    │         └─ ACTION: Accepter
+│    │        │ │     │             │         │       │    └─────────── Port SOURCE: 31337
+│    │        │ │     │             │         │       └──────────────── Protocole: TCP
+│    │        │ │     │             │         └───────────────────────  IP destination
+│    │        │ │     │             └──────────────────────────────── 10.0.0.1
+│    │        │ │     └─────────────────────────────────────────────  Source: 10.0.0.2
+│    │        │ └───────────────────────────────────────────────────── Chaîne: INPUT
+│    │        └─────────────────────────────────────────────────────── Ajouter (-A)
+│    └──────────────────────────────────────────────────────────────── iptables
+└─────────────────────────────────────────────────────────────────── sudo
+
+
+#connection: 
+nc -v 10.0.0.2 31337
+
