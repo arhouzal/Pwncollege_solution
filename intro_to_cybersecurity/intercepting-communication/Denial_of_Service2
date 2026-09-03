@@ -20,7 +20,7 @@ Client code:
         break
 
 
-#  code python :
+----------------------#  code python a executer---------------------
 python3 << 'EOF'
 import socket
 import threading
@@ -52,7 +52,7 @@ print("[*] Flag devrait s'afficher maintenant !")
 while True:
     time.sleep(1)
 EOF
-
+---------------------------------------------------------------------
 
 
 # documentaion :
