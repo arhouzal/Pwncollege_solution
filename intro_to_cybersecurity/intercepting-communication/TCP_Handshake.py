@@ -39,4 +39,4 @@ and syn_ack[TCP].flags == "SA" (Vérification de l'état du protocole) :
 En Scapy, la syntaxe paquet[Couche] permet d'accéder aux champs d'un protocole spécifique. Ici, on accède à l'en-tête TCP et on vérifie son champ flags.
 On s'assure que le serveur a bien répondu avec les drapeaux SYN et ACK ("SA"). Si le serveur avait refusé la connexion (par exemple avec un drapeau RST ou FIN),
 cette condition empêcherait le script d'envoyer le troisième paquet du handshake dans le vide.
-"
+"""
