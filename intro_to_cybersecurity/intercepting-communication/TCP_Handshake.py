@@ -24,7 +24,7 @@ if syn_ack and syn_ack.haslayer(TCP) and syn_ack[TCP].flags == "SA":
 else:
     print("[-] Aucune réponse SYN+ACK reçue ou mauvais flags.")
 
-""
+"""
 if syn_ack (Vérification de la réception) :
 La fonction sr1() possède un timeout (un délai d'attente maximum). Si le serveur cible ne répond pas, ou si le paquet se perd,
 la variable syn_ack contiendra None. Cette première condition vérifie qu'un paquet a bien été capturé. 
