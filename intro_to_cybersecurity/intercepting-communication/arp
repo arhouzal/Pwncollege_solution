@@ -16,3 +16,9 @@ sendp(reply, verbose=False)
 
 #Avec psrc="10.0.0.1" : La victime enregistre 10.0.0.1 = 42:42.... Elle vous croit sur parole ! Mais le système du challenge échoue,
 #car il attendait spécifiquement que vous créiez une entrée pour l'IP .42, pas pour la .1.
+__________NOITON__________________________________
+L'amnésie du protocole (Stateless) : Le pire dans l'histoire, c'est que la machine .2 n'avait même pas posé la question ! Le protocole ARP est "sans état".
+Lorsqu'un système reçoit une réponse ARP (op=2), 
+il ne garde pas d'historique de ses questions. Il ne vérifie pas s'il attendait cette réponse :
+il accepte l'information aveuglément et met son cache à jour immédiatement.
+-------------------------------------------------------
