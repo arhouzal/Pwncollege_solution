@@ -1,0 +1,13 @@
+from scapy.all import IP, UDP, Raw, send
+
+# Construction et envoi du paquet forgé
+paquet = IP(dst="10.0.0.2") / UDP(sport=31337, dport=31338) / Raw(load=b"FLAG:10.0.0.1:4444")
+send(paquet)
+
+print("[+] Paquet Scapy envoyé !")
+
+# est bien il faut ouvrie les le port sur notre machine pour accepter la 
+# la reponse udp exp(port= 4444)
+# exectuer cette commande avant le code python :
+  nc -lu -p 4444 & 
+ & : executer en arrier plan si on travail sur une seul session 
