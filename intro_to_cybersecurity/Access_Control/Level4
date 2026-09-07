@@ -1,0 +1,8 @@
+/bin/cat /flag 
+
+#note :
+si on applique le ls -la --> -rwsr-xr-x 1 root root ... /bin/cat
+Le s minuscule à la place du x habituel dans -rws**r**-xr-x : C'est le fameux bit SUID dont nous avons parlé.
+Il indique que ce programme s'exécutera toujours avec les privilèges de son propriétaire (root),
+peu importe l'utilisateur qui clique dessus cat le programme qui a lancer :
+par exemple le shell (bash) qui herrite le uid de l etulisateur actuel 
