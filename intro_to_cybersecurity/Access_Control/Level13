@@ -1,0 +1,4 @@
+Rule Applied: According to the *-Property, a subject can write to an object if and only if the object's security level dominates the subject's level ($l_s \le l_o$).
+Since both the subject and the object are at the exact same level (UC), equality satisfies the condition ($UC \le UC$).
+Answer : yes
+

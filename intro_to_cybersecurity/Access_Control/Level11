@@ -1,0 +1,7 @@
+Sur un fichier texte, r permet de lire et x d'exécuter un script. Mais sur un répertoire (dossier), le sens change complètement :
+
+Le droit r (Read) : C'est le droit de lister. Il vous permet de faire ls pour voir les noms des fichiers à l'intérieur.
+
+Le droit x (Execute) : C'est le droit de traverser. Il vous permet de faire cd pour entrer dans le dossier et d'interagir avec les fichiers qu'il contient,
+à condition de connaître leur nom exact.
+

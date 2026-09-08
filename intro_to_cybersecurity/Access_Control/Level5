@@ -1,0 +1,12 @@
+# executer :
+/bin/cp /flag /home/hacker/flag1
+
+# notions :
+Le pouvoir du SUID : Lorsque vous avez exécuté /bin/cp /flag /home/hacker/ff, le noyau a vu le bit SUID (s) et a donné à ce processus les super-pouvoirs de root (UID 0) 
+pendant toute la durée de la copie.
+
+Le contournement des permissions : Le fichier /flag possède les permissions -r-------- (strictement réservé à root). Un utilisateur normal (hacker, UID 1000)
+n'a normalement pas le droit de le lire.
+
+La copie magique : Vu que /bin/cp s'exécutait avec l'identité de root, il a pu ouvrir et lire le fichier /flag sans aucun problème, puis il a écrit le résultat dans
+votre dossier personnel /home/hacker/flag1.

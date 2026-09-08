@@ -1,0 +1,12 @@
+# on a besoin de testet tous les user est voire leurs groups qui correspond au group du root 
+# alors c est trop est pour cela on code un script bash pour tester les choses d une manierre 
+#manuel 
+# script :
+------------------------
+for user in [les users donner par le challenge]; do
+	if groups $user | grep -q "root_group_name";then
+	echo "----- USER = $user "
+done
+
+
+

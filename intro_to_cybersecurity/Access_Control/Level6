@@ -1,0 +1,6 @@
+# 1 : changer le group de hacker par le group ou appartient le owner du flag
+   commande : newgrp <nom_group>
+   verification : id 
+# 2 : lire le flag 
+cat flag
+

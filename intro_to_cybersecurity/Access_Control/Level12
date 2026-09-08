@@ -1,0 +1,8 @@
+/tmp/tmpcbq_qqex/  --- (Dossier 1) ---> Appartient au groupe de [user_ishlcaso]
+   │
+   └── tmpy0ld1rpj/ --- (Dossier 2) ---> Appartient au groupe de [user_yeymcycd]
+         │
+         └── tmpdu970u_c  --- (Fichier)  ---> Appartient au groupe de [user_nvjsddzv] (Le Flag !)
+
+
+cat /tmp/tmpcbq_qqex/tmpy0ld1rpj/tmpdu970u_c
