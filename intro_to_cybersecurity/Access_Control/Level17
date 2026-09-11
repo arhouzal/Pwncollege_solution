@@ -1,0 +1,52 @@
+from pwn import *
+import re
+
+# Dictionnaire pour convertir les niveaux textuels en valeurs numériques
+levels = {'TS': 4, 'S': 3, 'C': 2, 'UC': 1}
+
+def calculer_reponse(question):
+    # Outil de filtrage (Regex) pour extraire dynamiquement les mots utiles de la phrase
+    motif = r"Subject with level (\w+) and categories \{(.*?)\} (read|write) an Object with level (\w+) and categories \{(.*?)\}\?"
+    match = re.search(motif, question)
+    
+    if not match: return "no"
+        
+    # Extraction et stockage dans des variables
+    sujet_niv = levels[match.group(1)]
+    # Transforme le texte "{NATO, UFO}" en un ensemble mathématique (set)
+    sujet_cat = set(match.group(2).split(', ')) if match.group(2) else set()
+    action = match.group(3)
+    objet_niv = levels[match.group(4)]
+    objet_cat = set(match.group(5).split(', ')) if match.group(5) else set()
+
+    # Application stricte de la logique expliquée plus haut
+    if action == "read":
+        if sujet_niv >= objet_niv and sujet_cat.issuperset(objet_cat):
+            return "yes"
+        return "no"
+            
+    elif action == "write":
+        if objet_niv >= sujet_niv and objet_cat.issuperset(sujet_cat):
+            return "yes"
+        return "no"
+
+# ==========================================
+# PHASE DE CONNEXION AU BINAIRE (PWNTOOLS)
+# ==========================================
+
+# 1. process() exécute le binaire localement
+io = process('/challenge/run')
+
+# 2. Boucle pour traiter les 20 questions à la chaîne
+for i in range(20):
+    # recvuntil() écoute la sortie du programme jusqu'à détecter la fin de la question ('?')
+    question_texte = io.recvuntil(b'?').decode('utf-8')
+    
+    # Appel de la fonction logique pour décider yes/no
+    reponse = calculer_reponse(question_texte)
+    
+    # sendline() envoie instantanément la réponse suivie d'un appui sur "Entrée"
+    io.sendline(reponse.encode())
+
+# 3. Rend le contrôle au terminal pour afficher le résultat final (le flag)
+io.interactive()
