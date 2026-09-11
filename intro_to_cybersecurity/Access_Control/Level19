@@ -1,0 +1,64 @@
+from pwn import *
+
+# 1. Lancer le processus du challenge
+io = process('/challenge/run')
+
+# On lit tout le texte d'intro jusqu'à ce qu'on arrive à la première question
+intro = io.recvuntil(b'Q 1.').decode('utf-8')
+
+# On isole la partie du texte contenant la liste des 40 niveaux
+bloc = intro.split("40 Levels")[1].split("Categories:")[0]
+
+# On nettoie pour obtenir la liste propre des 40 noms de niveaux
+liste_niveaux = [ligne.strip() for ligne in bloc.split('\n') if ligne.strip() and "(" not in ligne]
+
+# On attribue une note : le 1er de la liste est le plus fort (note 40), le dernier le plus faible (note 1)
+total = len(liste_niveaux)
+valeurs = {}
+for index, nom in enumerate(liste_niveaux):
+    valeurs[nom] = total - index
+
+for i in range(128):
+    # Lecture du texte de la question
+    if i == 0:
+        question = "Q 1." + io.recvuntil(b'?').decode('utf-8')
+    else:
+        question = io.recvuntil(b'?').decode('utf-8')
+    
+    # 1. Détecter l'action
+    action = "read" if " read " in question else "write"
+        
+    # 2. Extraire le niveau du Sujet et de l'Objet
+    sujet_nom = question.split("Subject with level ")[1].split(" ")[0]
+    sujet_note = valeurs[sujet_nom]
+    
+    objet_nom = question.split("Object with level ")[1].split(" ")[0]
+    objet_note = valeurs[objet_nom]
+    
+    # 3. Extraire les catégories entre les accolades { }
+    sujet_cat_str = question.split("Subject")[1].split("{")[1].split("}")[0]
+    sujet_cats = sujet_cat_str.split(", ") if sujet_cat_str != "" else []
+    
+    objet_cat_str = question.split("Object")[1].split("{")[1].split("}")[0]
+    objet_cats = objet_cat_str.split(", ") if objet_cat_str != "" else []
+
+    # 4. Appliquer les règles de Bell-LaPadula
+    reponse = "no"
+    
+    if action == "read":
+        # READ: Sujet >= Objet ET Sujet possède TOUTES les catégories de l'Objet
+        if sujet_note >= objet_note:
+            if all(cat in sujet_cats for cat in objet_cats):
+                reponse = "yes"
+                
+    elif action == "write":
+        # WRITE: Objet >= Sujet ET Objet possède TOUTES les catégories du Sujet
+        if objet_note >= sujet_note:
+            if all(cat in objet_cats for cat in sujet_cats):
+                reponse = "yes"
+
+    # 5. Envoyer la réponse instantanément
+    io.sendline(reponse.encode())
+
+# Passer en mode interactif à la fin pour voir le Flag
+io.interactive()
