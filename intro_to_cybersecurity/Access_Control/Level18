@@ -1,0 +1,67 @@
+from pwn import *
+
+# 1. On donne des notes aux niveaux pour les comparer facilement (4 est le plus fort)
+valeurs = {'TS': 4, 'S': 3, 'C': 2, 'UC': 1}
+
+# Lancement du challenge
+io = process('/challenge/run')
+
+# On boucle pour les 20 questions
+for i in range(64):
+    # On lit la question envoyée par le jeu
+    question = io.recvuntil(b'?').decode('utf-8')
+ 
+    # Action (Est-ce qu'on lit ou on écrit ?)
+    if " read " in question:
+        action = "read"
+    else:
+        action = "write"
+        
+    # Niveau du Sujet : On coupe la phrase après "Subject with level " et on prend le 1er mot
+    sujet_niveau_texte = question.split("Subject with level ")[1].split(" ")[0]
+    sujet_note = valeurs[sujet_niveau_texte] # Convertit "TS" en 4
+    
+    # Niveau de l'Objet : On fait pareil
+    objet_niveau_texte = question.split("Object with level ")[1].split(" ")[0]
+    objet_note = valeurs[objet_niveau_texte]
+    
+    # Catégories du Sujet : On récupère ce qu'il y a entre les premières accolades { }
+    sujet_categories_texte = question.split("Subject")[1].split("{")[1].split("}")[0]
+    # Si ce n'est pas vide, on sépare les catégories par la virgule pour en faire une liste
+    sujet_categories = sujet_categories_texte.split(", ") if sujet_categories_texte != "" else []
+    
+    # Catégories de l'Objet : Pareil pour le deuxième bloc d'accolades { }
+    objet_categories_texte = question.split("Object")[1].split("{")[1].split("}")[0]
+    objet_categories = objet_categories_texte.split(", ") if objet_categories_texte != "" else []
+
+    reponse = "no" # Par défaut, on bloque l'accès
+    
+    if action == "read":
+        # RÈGLE LECTURE : Le Sujet doit être supérieur ou égal à l'Objet
+        if sujet_note >= objet_note:
+            
+            # Le Sujet doit aussi posséder TOUTES les catégories requises par l'objet
+            categories_valides = True
+            for cat in objet_categories:
+                if cat not in sujet_categories:
+                    categories_valides = False # Il manque une catégorie !
+            
+            if categories_valides == True:
+                reponse = "yes"
+                
+    elif action == "write":
+        # RÈGLE ÉCRITURE : L'Objet doit être supérieur ou égal au Sujet
+        if objet_note >= sujet_note:
+            
+            # L'Objet doit posséder TOUTES les catégories du sujet
+            categories_valides = True
+            for cat in sujet_categories:
+                if cat not in objet_categories:
+                    categories_valides = False # L'objet ne couvre pas une catégorie !
+            
+            if categories_valides == True:
+                reponse = "yes"
+    io.sendline(reponse.encode())
+
+# Fin du jeu : on vous rend la main pour voir le Flag
+io.interactive()
